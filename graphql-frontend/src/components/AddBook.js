@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
-import { getAuthors } from '../queries/queries'
+import { compose } from 'redux';
+import { getAuthors, addBook } from '../queries/queries'
 
 class AddBook extends Component {
 
+  state = {
+    name: '',
+    genre: '',
+    authorId: ''
+  }
+
   listAuthors = () => {
-    let data = this.props.data
+    let data = this.props.getAuthors
 
     if (data.loading) {
       return(<option disabled>Loading Authors...</option>)
@@ -15,24 +22,29 @@ class AddBook extends Component {
       })
     }
   }
+
+  submitForm = e => {
+    e.preventDefault()
+    this.props.addBook()
+  }
   
   render() {
     return (
-      <form id='add-book'>
+      <form id='add-book' onSubmit={ this.submitForm }>
 
         <div className='field'>
           <label>Book name:</label>
-          <input type='text' />
+          <input type='text' onChange={(e) => this.setState({ name: e.target.value })} />
         </div>
 
         <div className='field'>
           <label>Genre:</label>
-          <input type='text' />
+          <input type='text' onChange={(e) => this.setState({ genre: e.target.value })} />
         </div>
 
         <div className='field'>
           <label>Author:</label>
-          <select>
+          <select onChange={(e) => this.setState({ authorId: e.target.value })} >
             <option>Select Author</option>
             { this.listAuthors() }
           </select>
@@ -45,4 +57,7 @@ class AddBook extends Component {
   }
 }
 
-export default graphql(getAuthors)(AddBook);
+export default compose(
+  graphql(getAuthors, { name: 'getAuthors' }),
+  graphql(addBook, { name: 'addBook' })
+)(AddBook);
