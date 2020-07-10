@@ -11,13 +11,13 @@ class BookDetails extends Component {
       return(
         <div>
           <h2>{ book.name }</h2>
-          <p>{ book.genre }</p>
-          <p>{ book.author.name }</p>
+          <p><b>Author: </b>{ book.author.name }</p>
+          <p><b>Genre: </b>{ book.genre }</p>
           <p>All books by this author:</p>
           <ul className='otherBooks'>
             {
               book.author.books.map(item => {
-                return <li key={item.id}>{ item.name }</li>
+                return <li className='author-books' key={item.id}>{ item.name }</li>
               })
             }
           </ul>
